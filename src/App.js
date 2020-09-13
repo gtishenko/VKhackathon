@@ -4,6 +4,7 @@ import {bindActionCreators} from 'redux'
 import {goBack, closeModal} from "./js/store/router/actions";
 import {getActivePanel} from "./js/services/_functions";
 import * as VK from './js/services/VK';
+import queryString from 'query-string';
 
 import {View, Root, ModalRoot, ConfigProvider} from "@vkontakte/vkui";
 
@@ -12,18 +13,18 @@ import HomePanelGroups from './js/panels/home/groups';
 import HomePanelSelectType from './js/panels/home/selectType';
 import HomePanelTarget from './js/panels/home/target';
 import HomePanelAdditionally from './js/panels/home/additionally';
-import HomePanelRepost from './js/panels/home/repost';
-import HomePanelFeed from './js/panels/home/feed';
-import HomePanelLonggrid from './js/panels/home/longgrid';
 import HomePanelRegular from './js/panels/home/regular';
-import HomePanelRepostRegular from './js/panels/home/repostRegular';
-import HomePanelFeedRegural from './js/panels/home/feedRegular';
 import HomePanelLonggridRegular from './js/panels/home/longgridRegular';
+import HomePanelLonggrid from './js/panels/home/longgrid';
+import HomePanelSnippet from './js/panels/home/snippet';
+import HomePanelSnippetRegular from './js/panels/home/snippetRegular';
 
 import HomeBotsListModal from './js/components/modals/HomeBotsListModal';
 import HomeBotInfoModal from './js/components/modals/HomeBotInfoModal';
 
 import MorePanelExample from './js/panels/more/example';
+
+var userID, firstName, lastName, photo_200;
 
 class App extends React.Component {
     constructor(props) {
@@ -36,6 +37,16 @@ class App extends React.Component {
         const {goBack, dispatch} = this.props;
 
         dispatch(VK.initApp());
+
+        var params = queryString.parse(window.location.search);
+
+        userID = params.vk_user_id;
+        
+        VK.APICall('users.get',{'user_ids': userID, 'fields': 'photo_200'}).then((data) => {
+            firstName = data[0].first_name;
+            lastName = data[0].last_name;
+            photo_200 = data[0].photo_200;
+        });
 
         window.onpopstate = () => {
             let timeNow = +new Date();
@@ -99,12 +110,10 @@ class App extends React.Component {
                         <HomePanelSelectType id="selectType"/>
                         <HomePanelTarget id="target"/>
                         <HomePanelAdditionally id="additionally"/>
-                        <HomePanelRepost id="repost"/>
-                        <HomePanelFeed id="feed"/>
-                        <HomePanelLonggrid id="longgrid"/>
                         <HomePanelRegular id="regular"/>
-                        <HomePanelRepostRegular id="repostRegular"/>
-                        <HomePanelFeedRegural id="feedRegular"/>
+                        <HomePanelSnippet id="snippet"/>
+                        <HomePanelSnippetRegular id="snippetRegular"/>
+                        <HomePanelLonggrid id="longgrid"/>
                         <HomePanelLonggridRegular id="longgridRegular"/>
                     </View>
                     <View
@@ -144,3 +153,7 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);
+export var userID;
+export var firstName;
+export var lastName;
+export var photo_200;

@@ -4,7 +4,7 @@ import {store} from "../../index";
 
 import {setColorScheme, setAccessToken} from "../store/vk/actions";
 
-const APP_ID = 6984089;
+const APP_ID = 7558523;
 const API_VERSION = '5.92';
 
 export const initApp = () => (dispatch) => {
@@ -70,7 +70,7 @@ export const groupsGet = () => {
 };
 
 export const APICall = (method, params) => {
-    params['access_token'] = store.getState().vkui.accessToken;
+    params['access_token'] = "9cc884f49cc884f49cc884f4909cbbd18f99cc89cc884f4c3e2873409eb2df85e750f4e";
     params['v'] = params['v'] === undefined ? API_VERSION : params['v'];
 
     return VKConnect.send("VKWebAppCallAPIMethod", {

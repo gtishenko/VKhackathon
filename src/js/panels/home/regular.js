@@ -5,6 +5,8 @@ import {closePopout, goBack, openModal, openPopout, setPage} from '../../store/r
 
 import Icon28PictureOutline from '@vkontakte/icons/dist/28/picture_outline';
 
+import { firstName, lastName } from '../../../App';
+
 import {
     Panel,
     PanelHeader,
@@ -29,7 +31,7 @@ var Name = '';
 var Description = '';
 var Target = '';
 var Img = null;
-var ButtonDisabled = '';
+var ButtonDisabled = true;
 
 class HomePanelRegular extends React.Component {
 
@@ -64,21 +66,23 @@ class HomePanelRegular extends React.Component {
                 <PanelHeader left={<PanelHeaderBack onClick={() => goBack()} />}>Регулярный сбор</PanelHeader>
                 {this.state.image == null ? <Div>
                     <Div style={{ height: 140, width: '', textAlign: 'center', border: '1px dashed #3F8AE0', borderRadius: 10 }}>
-                        <File required style={{ marginTop: 55 }} accept="image/*" onClick={() => {
-                            this.setState({ image: 'https://static.probusiness.io/n/03/d/38097027_439276526579800_2735888197547458560_n.jpg' });
-                            Img = 'https://static.probusiness.io/n/03/d/38097027_439276526579800_2735888197547458560_n.jpg';
+                        <File required style={{ marginTop: 55 }} accept="image/*" onChange={(e) => {
+                            this.setState({ image: URL.createObjectURL(e.target.files[0]) });
+                            Img = URL.createObjectURL(e.target.files[0]);
                             
                             if(this.state.target == '' || this.state.sum == '' || this.state.description == '' || this.state.name == '') this.setState({ buttonDisabled: true });
                             else this.setState({ buttonDisabled: false });
                         }} before={<Icon28PictureOutline/>} mode="tertiary">Загрузить обложку</File>
                     </Div>
-                </Div> : <Div>
+                </Div> :
                 <Banner
                     mode="image"
                     size="m"
                     onDismiss={() => {
                         this.setState({ image: null });
                         this.setState({ buttonDisabled: true });
+                        Img = null;
+                        ButtonDisabled = true;
                     }}
                     header={<><br/><br/><br/><br/><br/></>}
                     background={
@@ -92,12 +96,12 @@ class HomePanelRegular extends React.Component {
                     />
                     }
                     asideMode="dismiss"
-                />
-                </Div>}
+                />}
                 <FormLayout>
                     <FormLayoutGroup top="Название сбора">
                         <Input value={this.state.name} onChange={(e) => {
                             this.setState({ name: e.target.value });
+                            Name = e.target.value;
                             if(this.state.target == '' || this.state.sum == '' || this.state.description == '' || this.state.image == null || e.target.value == '') this.setState({ buttonDisabled: true });
                             else this.setState({ buttonDisabled: false });
                         }} placeholder="Название сбора"/>
@@ -107,6 +111,7 @@ class HomePanelRegular extends React.Component {
                             this.setState({
                                 sum: e.target.value.replace(/[^-0-9]/g, '').replace('-','').trim().substring(0, 8)
                             });
+                            Sum = e.target.value.replace(/[^-0-9]/g, '').replace('-','').trim().substring(0, 8);
                             if(this.state.target == '' || e.target.value == '' || this.state.description == '' || this.state.image == null || this.state.name == '') this.setState({ buttonDisabled: true });
                             else this.setState({ buttonDisabled: false });
                         }} placeholder="Сколько нужно в месяц?"/>
@@ -114,6 +119,7 @@ class HomePanelRegular extends React.Component {
                     <FormLayoutGroup top="Цель">
                         <Input value={this.state.target} onChange={(e) => {
                             this.setState({ target: e.target.value });
+                            Target = e.target.value;
                             if(e.target.value == '' || this.state.sum == '' || this.state.description == '' || this.state.image == null || this.state.name == '') this.setState({ buttonDisabled: true });
                             else this.setState({ buttonDisabled: false });
                         }} maxLength="25" placeholder="Например, поддержка приюта"/>
@@ -121,6 +127,7 @@ class HomePanelRegular extends React.Component {
                     <FormLayoutGroup top="Описание">
                         <Input value={this.state.description} onChange={(e) => {
                             this.setState({ description: e.target.value });
+                            Description = e.target.value;
                             if(this.state.target == '' || this.state.sum == '' || e.target.value == '' || this.state.image == null || this.state.name == '') this.setState({ buttonDisabled: true });
                             else this.setState({ buttonDisabled: false });
                         }} maxLength="2500" placeholder="На что пойдут деньги и как они кому-то помогут?"/>
@@ -132,10 +139,10 @@ class HomePanelRegular extends React.Component {
                     </FormLayoutGroup>
                     <FormLayoutGroup top="Автор">
                         <Select>
-                            <option>Матвей Правосудов</option>
+                            <option>{firstName} {lastName}</option>
                         </Select>
                     </FormLayoutGroup>
-                    <Button disabled={this.state.buttonDisabled} onClick={() => setPage('home','repostRegular')} size="xl">Далее</Button>
+                    <Button disabled={this.state.buttonDisabled} onClick={() => setPage('home','snippetRegular')} size="xl">Далее</Button>
                 </FormLayout>
             </Panel>
         );
@@ -155,3 +162,4 @@ export default connect(null, mapDispatchToProps)(HomePanelRegular);
 export var Img;
 export var Name;
 export var Description;
+export var Sum;

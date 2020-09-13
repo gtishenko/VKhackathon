@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 
 import {closePopout, goBack, openModal, openPopout, setPage} from '../../store/router/actions';
 
-import Image from '../../../image/image.png';
+import {userID} from './../../../App';
 
 import {
     Panel,
@@ -45,6 +45,10 @@ class HomePanelBase extends React.Component {
 
     sum() {
         console.log('test');
+    }
+
+    componentDidMount() {
+        
     }
 
     render() {

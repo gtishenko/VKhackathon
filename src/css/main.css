@@ -30,3 +30,21 @@ a, div, img, p, button {
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
 }
+
+.test .Subhead {
+    color: black;
+}
+
+.inputBorder .FormField__border {
+    border-radius: 200px;
+}
+
+.simpleCellTest .SimpleCell__description {
+    color: black;
+    font-size: 14px;
+}
+
+.simpleCellTest .SimpleCell__children {
+    color: #2C2D2E;
+    font-size: 14px;
+}

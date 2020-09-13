@@ -3,19 +3,21 @@ import {connect} from 'react-redux';
 
 import {closePopout, goBack, openModal, openPopout, setPage} from '../../store/router/actions';
 
-import Icon24MoreHorizontal from '@vkontakte/icons/dist/24/more_horizontal';
 import Icon24LikeOutline from '@vkontakte/icons/dist/24/like_outline';
 import Icon24CommentOutline from '@vkontakte/icons/dist/24/comment_outline';
 import Icon24ShareOutline from '@vkontakte/icons/dist/24/share_outline';
-import Icon24ViewOutline from '@vkontakte/icons/dist/24/view_outline';
 import Icon16LikeOutline from '@vkontakte/icons/dist/16/like_outline';
 import Icon24BrowserBack from '@vkontakte/icons/dist/24/browser_back';
+import Icon28Send from '@vkontakte/icons/dist/28/send';
+import Icon16Cancel from '@vkontakte/icons/dist/16/cancel';
+import Icon16Done from '@vkontakte/icons/dist/16/done';
 
-import {Textt} from './repost';
 import {Img as Image} from './target';
 import {Name} from './target';
 import {Description} from './target';
+import {Sum as Price} from './target';
 
+import { firstName, lastName, photo_200 } from '../../../App';
 
 import {
     Panel,
@@ -46,9 +48,17 @@ import {
     HorizontalScroll,
     CardScroll,
     SimpleCell,
-    Avatar
+    Avatar,
+    Snackbar
 } from "@vkontakte/vkui";
-import { set } from 'core-js/fn/dict';
+
+const blueBackground = {
+    backgroundColor: 'var(--accent)'
+  };
+
+var Comments = [
+    {Name: 'Алексей Мазелюк', Text: 'Отправил.', Avatar: 'https://sun6-14.userapi.com/impf/c855124/v855124560/1527d6/y0jnCiyWwDw.jpg?size=200x0&quality=88&crop=403,874,620,620&sign=f793455d0e9ce4b5ab71f4069ded97de&c_uniq_tag=y0BOB2jR1siWkrPhX5Z4A0x4GMJyk0VFta8q5X96oNY&ava=1'}
+];
 
 class HomePanelLonggrid extends React.Component {
     constructor(props) {
@@ -60,7 +70,9 @@ class HomePanelLonggrid extends React.Component {
             description: '',
             disabled: true,
             image: null,
-            buttonDisabled: true
+            buttonDisabled: true,
+            snackbar: null,
+            commentText: ''
         };
     }
 
@@ -78,11 +90,11 @@ class HomePanelLonggrid extends React.Component {
                 </CardGrid>
                 <Div>
                     <Title level="2" weight="semibold" style={{ marginBottom: 4 }}>{Name}</Title>
-                    <Title style={{ color: '#6D7885' }} level="3" weight="semibold">Автор Матвей Правосудов</Title>
-                    <Title style={{ color: '#818C99' }} level="3" weight="regular">Сбор закончится через 5 дней</Title>
+                    <div style={{ fontSize: 14, color: '#818C99', fontWeight: 500 }}>Автор {firstName} {lastName}</div>
+                    <div style={{ fontSize: 13, color: '#818C99' }}>Сбор закончится через 5 дней</div>
                     <Separator style={{ marginTop: 16, marginBottom: 16 }} />
-                    <InfoRow header="Нужно собрать до 20 сентября">
-                        <Progress value={87} className="progressbar" />
+                    <InfoRow className="test" header="Нужно собрать до 20 сентября">
+                        <Progress style={{ marginTop: 4 }} value={25} className="progressbar" />
                     </InfoRow>
                     <Separator style={{ marginTop: 16, marginBottom: 16 }} />
                     <Text weight="regular">{Description}</Text>
@@ -97,30 +109,65 @@ class HomePanelLonggrid extends React.Component {
                     </div>
                 </Div>
                 <Separator/>
-                <SimpleCell
-                    description="Отправил"
+                {Comments.map((index, Comments) => <><SimpleCell
+                    className="simpleCellTest"
+                    description={index['Text']}
                     disabled
                     after={<Icon16LikeOutline/>}
-                    before={<Avatar src={"https://s3-alpha-sig.figma.com/img/6c1d/8605/59feb807fc7e6e0266fdafd52f636c37?Expires=1600646400&Signature=TiCEvGRYjqV0gvjFoNs2Vh1B-8dYkN789G2hKP1SBnrWft5XtYuolluxZNQVKndTsDzAllsiWFTeq3oHGhwldCr45OoTxhptJYbMorxigVNCwKS7qLSm2Vm3b7BJDBkT-mu72EwE-ZJnOaGTpDOYFD9BjuG85rLGKBZAfRvMn1uioN7ClGdtwRVVycai7HATOrnLtuYp9aWNIaJFLxASOvoWxamZoCbnWmOxJVkHnQacQ4YW0kcrA3u~fa~QuyDzxnDxaz2JAYOWuC94mcYp1vr~BCXl9-eLxQ7AYVg4ad8anh5X8y7Dvw43uUlsnHQS-SCxW0fvFb-0F62VVmf~Ig__&Key-Pair-Id=APKAINTVSUGEWH5XD5UA"}/>}
+                    before={<Avatar src={index['Avatar']}/>}
                     >
-                    Артур Стамбульцян
-                </SimpleCell>
+                    {index['Name']}
+                </SimpleCell></>)}
                 <SimpleCell
+                    style={{ marginBottom: 70 }}
                     disabled
-                    before={<Avatar src={"https://s3-alpha-sig.figma.com/img/6c1d/8605/59feb807fc7e6e0266fdafd52f636c37?Expires=1600646400&Signature=TiCEvGRYjqV0gvjFoNs2Vh1B-8dYkN789G2hKP1SBnrWft5XtYuolluxZNQVKndTsDzAllsiWFTeq3oHGhwldCr45OoTxhptJYbMorxigVNCwKS7qLSm2Vm3b7BJDBkT-mu72EwE-ZJnOaGTpDOYFD9BjuG85rLGKBZAfRvMn1uioN7ClGdtwRVVycai7HATOrnLtuYp9aWNIaJFLxASOvoWxamZoCbnWmOxJVkHnQacQ4YW0kcrA3u~fa~QuyDzxnDxaz2JAYOWuC94mcYp1vr~BCXl9-eLxQ7AYVg4ad8anh5X8y7Dvw43uUlsnHQS-SCxW0fvFb-0F62VVmf~Ig__&Key-Pair-Id=APKAINTVSUGEWH5XD5UA"}/>}
+                    before={<Avatar src={photo_200}/>}
+                    after={<Icon28Send onClick={() => {
+                        if(this.state.commentText.trim() == '') {
+                            if (this.state.snackbar) return;
+                            this.setState({ snackbar:
+                            <Snackbar
+                                layout="vertical"
+                                onClose={() => this.setState({ snackbar: null })}
+                                before={<Avatar size={24} style={{ backgroundColor: '#ff0000' }}><Icon16Cancel fill="#fff" width={14} height={14} /></Avatar>}
+                            >
+                                Вы не можете отправить пустой комментарий
+                            </Snackbar>
+                            });
+                        } else {
+                            Comments.push(
+                                {Name: firstName + " " + lastName, Text: this.state.commentText, Avatar: photo_200}
+                            );
+                            this.forceUpdate();
+                            this.setState({ commentText: '' });
+                            if (this.state.snackbar) return;
+                            this.setState({ snackbar:
+                                <Snackbar
+                                    layout="vertical"
+                                    onClose={() => this.setState({ snackbar: null })}
+                                    before={<Avatar size={24} style={blueBackground}><Icon16Done fill="#fff" width={14} height={14} /></Avatar>}
+                                >
+                                    Комментарий успешно отправлен!
+                                </Snackbar>
+                            });
+                        }
+                    }}/>}
                     >
-                    <Input placeholder="Комментарий" />
+                    <Input value={this.state.commentText} onChange={(e) => {
+                        this.setState({ commentText: e.target.value });
+                    }} className="inputBorder" placeholder="Комментарий" />
                 </SimpleCell>
-                <FixedLayout vertical="bottom">
+                <FixedLayout filled vertical="bottom">
                     <Div>
                     <div style={{display: 'flex'}}>
-                        <InfoRow style={{ width: '70%', marginRight: 12 }} header="Собрано 8 750 ₽ из 10 000 ₽">
-                            <Progress value={87} />
+                        <InfoRow className="test" style={{ width: '70%', marginRight: 12 }} header={"Собрано " + (Price/4).toFixed() + " ₽ из " + Price + " ₽"}>
+                            <Progress style={{ marginTop: 4 }} value={25} />
                         </InfoRow>
                         <Button>Помочь</Button>
                     </div>
                     </Div>
                 </FixedLayout>
+                {this.state.snackbar}
             </Panel>
         );
     }

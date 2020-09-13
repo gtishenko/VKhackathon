@@ -63,14 +63,14 @@ class HomePanelTarget extends React.Component {
                 <PanelHeader left={<PanelHeaderBack onClick={() => goBack()} />}>Целевой сбор</PanelHeader>
                 {this.state.image == null ? <Div>
                     <Div style={{ height: 140, width: '', textAlign: 'center', border: '1px dashed #3F8AE0', borderRadius: 10 }}>
-                        <File required style={{ marginTop: 55 }} accept="image/*" onClick={() => {
-                            this.setState({ image: 'https://static.probusiness.io/n/03/d/38097027_439276526579800_2735888197547458560_n.jpg' });
-                            Img = 'https://static.probusiness.io/n/03/d/38097027_439276526579800_2735888197547458560_n.jpg';
+                        <File required style={{ marginTop: 55 }} accept="image/*" onChange={(e) => {
+                            this.setState({ image: URL.createObjectURL(e.target.files[0]) });
+                            Img = URL.createObjectURL(e.target.files[0]);
                             if(this.state.target == '' || this.state.sum == '' || this.state.description == '' || this.state.name == '') this.setState({ buttonDisabled: true });
                             else this.setState({ buttonDisabled: false });
                         }} before={<Icon28PictureOutline/>} mode="tertiary">Загрузить обложку</File>
                     </Div>
-                </Div> : <Div>
+                </Div> :
                 <Banner
                     mode="image"
                     size="m"
@@ -90,8 +90,7 @@ class HomePanelTarget extends React.Component {
                     />
                     }
                     asideMode="dismiss"
-                />
-                </Div>}
+                />}
                 <FormLayout>
                     <FormLayoutGroup top="Название сбора">
                         <Input value={this.state.name} onChange={(e) => {
@@ -148,3 +147,4 @@ export default connect(null, mapDispatchToProps)(HomePanelTarget);
 export var Img;
 export var Name;
 export var Description;
+export var Sum;
